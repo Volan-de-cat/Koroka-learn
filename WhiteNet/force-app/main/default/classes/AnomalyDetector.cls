@@ -6,29 +6,40 @@ public with sharing class AnomalyDetector {
         this.anomalyRandeSetting = Anomaly_Range_Configuration__c.getOrgDefaults();
     }
 
-    public List<Anomaly__c> detectAnomaly(Weather__c weather){
-/*        bool Humidity_Anomaly=false;
-        bool Pressure_Anomaly=false;
-        bool Tempreature_Anomaly=false;*/
+    public List<Anomaly__c> detectAnomaly(Weather__c weather, City__c city_info){
         List<Anomaly__c> anomaliesToSave = new List<Anomaly__c>();
-     if (/*!Humidity_Anomaly &&*/ (anomalyRandeSetting.Max_Humidity__c<=weather.Humidity__c || anomalyRandeSetting.Min_Humidity__c>=weather.Humidity__c)){
+     if (anomalyRandeSetting.Max_Humidity__c<=weather.Humidity__c || anomalyRandeSetting.Min_Humidity__c>=weather.Humidity__c){
          anomaliesToSave.add(new Anomaly__c(
-             Type__c='Humidity Anomaly'
+            Type__c = 'Humidity Anomaly'
+            , Weather__c = weather.Humidity__c
+            , City__c = weather.City__c
+            , City_Name__c= city_info.Name
          ));  
-//         Humidity_Anomaly=true;
      }
-     if (/*!Pressure_Anomaly &&*/ (anomalyRandeSetting.Max_Pressure__c<=weather.Pressure__c || anomalyRandeSetting.Min_Pressure__c>=weather.Pressure__c)){
+     if (anomalyRandeSetting.Max_Pressure__c<=weather.Pressure__c || anomalyRandeSetting.Min_Pressure__c>=weather.Pressure__c){
         anomaliesToSave.add(new Anomaly__c(
-            Type__c='Pressure Anomaly'
+            Type__c = 'Pressure Anomaly'
+            , Weather__c = weather.Pressure__c
+            , City__c = weather.City__c
+            , City_Name__c= city_info.Name
         ));  
- //       Pressure_Anomaly=true;
     }
-     if (/*!Tempreature_Anomaly && */(anomalyRandeSetting.Max_Temperature__c<=weather.Maximum_Temperature__c || anomalyRandeSetting.Min_Temperature__c>=weather.Minimal_Temperature__c)){
+     if (anomalyRandeSetting.Max_Temperature__c<=weather.Maximum_Temperature__c){
         anomaliesToSave.add(new Anomaly__c(
-            Type__c='Temperature Anomaly'
+            Type__c = 'Temperature Anomaly'
+            , Weather__c = weather.Maximum_Temperature__c
+            , City__c = weather.City__c
+            , City_Name__c= city_info.Name
         )); 
- //       Tempreature_Anomaly=true;
     }
-        return anomaliesToSave;
+     if (anomalyRandeSetting.Min_Temperature__c>=weather.Minimal_Temperature__c){
+        anomaliesToSave.add(new Anomaly__c(
+            Type__c = 'Temperature Anomaly'
+            , Weather__c = weather.Minimal_Temperature__c
+            , City__c = weather.City__c
+            , City_Name__c= city_info.Name
+        )); 
+    }  
+    return anomaliesToSave;
     }
 }

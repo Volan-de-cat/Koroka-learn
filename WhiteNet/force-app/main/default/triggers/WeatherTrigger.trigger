@@ -24,3 +24,4 @@ trigger WeatherTrigger on Weather__c (before insert, after insert, before update
         }
     }
 }
+

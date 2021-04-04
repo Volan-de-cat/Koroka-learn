@@ -9,24 +9,23 @@ public with sharing class WeatherTriggerHandler {
         //insert Anomalies
         //update City
     AnomalyDetector detector = new AnomalyDetector();
+    Set<Id> IdCheck = new Set<Id>();
+    for (Weather__c weat : newList)
+    {
+         IdCheck.add(weat.City__c);
+    }
+     List<City__c> sity_list = [
+         SELECT Name
+                , Id
+         FROM City__c
+         WHERE Id IN: IdCheck];
+     City__c city_info = sity_list[0];
+     List<Anomaly__c> anomaly_list = new List<Anomaly__c>();
     for (Weather__c weather : newList)
     {
-        List<Anomaly__c> anomaly_list = detector.detectAnomaly(weather);
-        List<City__c> sity_list = [
-            SELECT Id
-                , Name
-            FROM City__c
-            WHERE Id =: weather.City__c];
-        City__c city_info = sity_list[0];
-        for (Anomaly__c anomaly : anomaly_list)
-        {
-           Anomaly__c newAnomaly =  new Anomaly__c(
-                Type__c = anomaly.Type__c
-               , City_Name__c = city_info.Name 
-               , City__c = city_info.Id 
-               , Weather__c = weather.Id);
-           insert(newAnomaly);
-        }
+        anomaly_list = detector.detectAnomaly(weather, city_info);
+    }
+    insert anomaly_list;
     }
 }
 
